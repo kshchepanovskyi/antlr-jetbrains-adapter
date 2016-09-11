@@ -279,7 +279,7 @@ loop:
 
 		int i = 0;
 		while ( i < elements.length ) {
-			Collection<PsiElement> next = new LinkedHashSet<>();
+			Collection<PsiElement> next = new LinkedHashSet<PsiElement>();
 			for (PsiElement node : work) {
 				if ( node.getChildren().length>0 ) {
 					// only try to match next element if it has children

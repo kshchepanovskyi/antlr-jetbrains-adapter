@@ -37,7 +37,7 @@ public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
 	protected final List<RuleIElementType> ruleElementTypes;
 
 	/** Map an error's start char index (usually start of a token) to the error object. */
-	protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<>();
+	protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<Integer, SyntaxError>();
 
 	public ANTLRParseTreeToPSIConverter(Language language, Parser parser, PsiBuilder builder) {
 		this.language = language;
