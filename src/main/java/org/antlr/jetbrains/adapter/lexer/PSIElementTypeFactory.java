@@ -20,11 +20,11 @@ import java.util.Map;
  *  it's not keeping an instance per plugin/Language.
  */
 public class PSIElementTypeFactory {
-	private static final Map<Language, List<TokenIElementType>> tokenIElementTypesCache = new HashMap<>();
-	private static final Map<Language, List<RuleIElementType>>  ruleIElementTypesCache = new HashMap<>();
-	private static final Map<Language, Map<String, Integer>>    tokenNamesCache = new HashMap<>();
-	private static final Map<Language, Map<String, Integer>>    ruleNamesCache = new HashMap<>();
-	private static final Map<Language, TokenIElementType>       eofIElementTypesCache = new HashMap<>();
+	private static final Map<Language, List<TokenIElementType>> tokenIElementTypesCache = new HashMap<Language, List<TokenIElementType>>();
+	private static final Map<Language, List<RuleIElementType>>  ruleIElementTypesCache = new HashMap<Language, List<RuleIElementType>>();
+	private static final Map<Language, Map<String, Integer>>    tokenNamesCache = new HashMap<Language, Map<String, Integer>>();
+	private static final Map<Language, Map<String, Integer>>    ruleNamesCache = new HashMap<Language, Map<String, Integer>>();
+	private static final Map<Language, TokenIElementType>       eofIElementTypesCache = new HashMap<Language, TokenIElementType>();
 
 	private PSIElementTypeFactory() {
 	}

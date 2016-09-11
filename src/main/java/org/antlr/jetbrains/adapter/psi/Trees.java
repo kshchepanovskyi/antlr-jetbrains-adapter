@@ -69,7 +69,7 @@ public class Trees {
 	 */
 	public static List<? extends PsiElement> getAncestors(PsiElement t) {
 		if ( t.getParent()==null ) return Collections.emptyList();
-		List<PsiElement> ancestors = new ArrayList<>();
+		List<PsiElement> ancestors = new ArrayList<PsiElement>();
 		t = t.getParent();
 		while ( t!=null ) {
 			ancestors.add(0, t); // insert at start
@@ -100,7 +100,7 @@ public class Trees {
 	 *  node.
 	 */
 	public static Map<String, PsiElement> toMap(Collection<? extends PsiElement> nodes) {
-		HashMap<String,PsiElement> m = new HashMap<>();
+		HashMap<String,PsiElement> m = new HashMap<String,PsiElement>();
 
 		for (PsiElement node : nodes) {
 			m.put(node.getText(), node);
@@ -117,7 +117,7 @@ public class Trees {
 	}
 
 	public static List<PsiElement> findAllNodes(PsiElement t, int index, boolean findTokens) {
-		List<PsiElement> nodes = new ArrayList<>();
+		List<PsiElement> nodes = new ArrayList<PsiElement>();
 		_findAllNodes(t, index, findTokens, nodes);
 		return nodes;
 	}
@@ -150,7 +150,7 @@ public class Trees {
 
 	/** Get all descendents; includes t itself. */
 	public static List<PsiElement> getDescendants(PsiElement t) {
-		List<PsiElement> nodes = new ArrayList<>();
+		List<PsiElement> nodes = new ArrayList<PsiElement>();
 		nodes.add(t);
 
 		for (PsiElement c : t.getChildren()) {
@@ -167,7 +167,7 @@ public class Trees {
 		PsiElement psiChild = t.getFirstChild();
 		if (psiChild == null) return PsiElement.EMPTY_ARRAY;
 
-		List<PsiElement> result = new ArrayList<>();
+		List<PsiElement> result = new ArrayList<PsiElement>();
 		while (psiChild != null) {
 			if ( !(psiChild instanceof PsiComment) &&
 				 !(psiChild instanceof PsiWhiteSpace) )

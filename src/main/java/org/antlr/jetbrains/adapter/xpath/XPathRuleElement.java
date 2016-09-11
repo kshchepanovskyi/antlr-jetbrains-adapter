@@ -48,7 +48,7 @@ public class XPathRuleElement extends XPathElement {
 	@Override
 	public Collection<PsiElement> evaluate(PsiElement t) {
 		// return all children of t that match ANTLR rule index
-		List<PsiElement> nodes = new ArrayList<>();
+		List<PsiElement> nodes = new ArrayList<PsiElement>();
 		for (PsiElement c : t.getChildren()) {
 			IElementType elementType = c.getNode().getElementType();
 			if ( elementType instanceof RuleIElementType ) {
