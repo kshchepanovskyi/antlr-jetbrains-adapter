@@ -8,7 +8,7 @@ jetbrains PSI trees.
 
 # Usage
 
-## Gradle
+Instruction below is suitable for plugin that are using [gradle build system](https://github.com/JetBrains/gradle-intellij-plugin).
 
 Add repository to the build script - `https://dl.bintray.com/antlr/maven/`:
 
