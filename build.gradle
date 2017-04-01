@@ -1,13 +1,14 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
         mavenLocal()
         mavenCentral()
     }
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.1.10"
+    id "org.jetbrains.intellij" version "0.2.7"
     id "com.jfrog.bintray" version "1.6"
 }
 
