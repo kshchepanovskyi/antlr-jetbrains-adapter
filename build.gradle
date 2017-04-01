@@ -80,7 +80,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '3.4.1'
 }
 
 // ~/gradle.properties should contain repo credentials:
