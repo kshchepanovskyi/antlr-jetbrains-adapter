@@ -145,7 +145,7 @@ public class XPath {
 
 		List<Token> tokens = tokenStream.getTokens();
 //		System.out.println("path="+path+"=>"+tokens);
-		List<XPathElement> elements = new ArrayList<XPathElement>();
+		List<XPathElement> elements = new ArrayList<>();
 		int n = tokens.size();
 		int i=0;
 loop:
@@ -279,7 +279,7 @@ loop:
 
 		int i = 0;
 		while ( i < elements.length ) {
-			Collection<PsiElement> next = new LinkedHashSet<PsiElement>();
+			Collection<PsiElement> next = new LinkedHashSet<>();
 			for (PsiElement node : work) {
 				if ( node.getChildren().length>0 ) {
 					// only try to match next element if it has children

@@ -13,13 +13,13 @@ import java.util.*;
  *  This swallows the errors as the PSI tree has error nodes.
  */
 public class SyntaxErrorListener extends BaseErrorListener {
-	private final Map<RecognitionException, SyntaxError> syntaxErrors = new HashMap<RecognitionException, SyntaxError>();
+	private final Map<RecognitionException, SyntaxError> syntaxErrors = new HashMap<>();
 
 	public SyntaxErrorListener() {
 	}
 
 	public List<SyntaxError> getSyntaxErrors() {
-		return new ArrayList<SyntaxError>(syntaxErrors.values());
+		return new ArrayList<>(syntaxErrors.values());
 	}
 
 	public Map<RecognitionException, SyntaxError> getErrorMap() {

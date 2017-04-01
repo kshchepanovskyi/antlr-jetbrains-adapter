@@ -32,13 +32,13 @@ public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
 	protected final Language language;
 	protected final PsiBuilder builder;
 	protected Map<RecognitionException, SyntaxError> syntaxErrors;
-	protected final Deque<PsiBuilder.Marker> markers = new ArrayDeque<PsiBuilder.Marker>();
+	protected final Deque<PsiBuilder.Marker> markers = new ArrayDeque<>();
 
 	protected final List<TokenIElementType> tokenElementTypes;
 	protected final List<RuleIElementType> ruleElementTypes;
 
 	/** Map an error's start char index (usually start of a token) to the error object. */
-	protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<Integer, SyntaxError>();
+	protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<>();
 
 	public ANTLRParseTreeToPSIConverter(Language language, Parser parser, PsiBuilder builder) {
 		this.language = language;

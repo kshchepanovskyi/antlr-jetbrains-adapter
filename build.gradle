@@ -23,8 +23,8 @@ repositories {
 apply plugin: 'antlr'
 
 dependencies {
-    antlr 'org.antlr:antlr4:4.5'
-    compile 'org.antlr:antlr4-runtime:4.5.2'
+    antlr 'org.antlr:antlr4:4.7'
+    compile 'org.antlr:antlr4-runtime:4.7'
 }
 
 apply plugin: 'idea'
@@ -96,7 +96,7 @@ bintray {
         name = rootProject.name
         userOrg = 'antlr'
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/antlr/jetbrains.git'
+        vcsUrl = 'https://github.com/kshchepanovskyi/antlr4-jetbrains-adapter'
         publicDownloadNumbers = true
         version {
             name = rootProject.version

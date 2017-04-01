@@ -113,7 +113,7 @@ public class XPathTest extends ParsingTestCase {
                         "=\n"+
                         "\"sdflkjsdf\"\n"+
                         "return\n"+
-                        "false;";
+                        "false";
         String xpath = "//function/*/statement/*";
         checkXPathResults(code, xpath, output);
     }
