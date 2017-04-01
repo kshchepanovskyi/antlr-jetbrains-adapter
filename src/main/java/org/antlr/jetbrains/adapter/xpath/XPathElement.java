@@ -35,25 +35,26 @@ import com.intellij.psi.PsiElement;
 import java.util.Collection;
 
 public abstract class XPathElement {
-	protected String nodeName;
-	protected boolean invert;
+    protected String nodeName;
+    protected boolean invert;
 
-	/** Construct element like {@code /ID} or {@code ID} or {@code /*} etc...
-	 *  op is null if just node
-	 */
-	public XPathElement(String nodeName) {
-		this.nodeName = nodeName;
-	}
+    /**
+     * Construct element like {@code /ID} or {@code ID} or {@code /*} etc...
+     * op is null if just node
+     */
+    public XPathElement(String nodeName) {
+        this.nodeName = nodeName;
+    }
 
-	/**
-	 * Given subtree rooted at {@code t} return all children of t that
-	 * match this path element.
-	 */
-	public abstract Collection<PsiElement> evaluate(PsiElement t);
+    /**
+     * Given subtree rooted at {@code t} return all children of t that
+     * match this path element.
+     */
+    public abstract Collection<PsiElement> evaluate(PsiElement t);
 
-	@Override
-	public String toString() {
-		String inv = invert ? "!" : "";
-		return getClass().getSimpleName()+"["+inv+nodeName+"]";
-	}
+    @Override
+    public String toString() {
+        String inv = invert ? "!" : "";
+        return getClass().getSimpleName() + "[" + inv + nodeName + "]";
+    }
 }

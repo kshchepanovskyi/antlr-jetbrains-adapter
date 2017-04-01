@@ -12,21 +12,21 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
 
-	private final SampleParserDefinition parserDefinition;
+    private final SampleParserDefinition parserDefinition;
 
-	public BlockSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
-		super(node);
-		this.parserDefinition = parserDefinition;
-	}
+    public BlockSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
+        super(node);
+        this.parserDefinition = parserDefinition;
+    }
 
-	@Nullable
-	@Override
-	public PsiElement resolve(PsiNamedElement element) {
+    @Nullable
+    @Override
+    public PsiElement resolve(PsiNamedElement element) {
 //		System.out.println(getClass().getSimpleName()+
 //		                   ".resolve("+element.getName()+
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
 
-		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
-				element, "/block/vardef/ID");
-	}
+        return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+                element, "/block/vardef/ID");
+    }
 }

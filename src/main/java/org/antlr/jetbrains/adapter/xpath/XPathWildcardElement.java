@@ -37,17 +37,17 @@ import java.util.Collection;
 import java.util.List;
 
 public class XPathWildcardElement extends XPathElement {
-	public XPathWildcardElement() {
-		super(XPath.WILDCARD);
-	}
+    public XPathWildcardElement() {
+        super(XPath.WILDCARD);
+    }
 
-	@Override
-	public Collection<PsiElement> evaluate(final PsiElement t) {
-		if ( invert ) return new ArrayList<>(); // !* is weird but valid (empty)
-		List<PsiElement> kids = new ArrayList<>();
-		for (PsiElement c : t.getChildren()) {
-			kids.add(c);
-		}
-		return kids;
-	}
+    @Override
+    public Collection<PsiElement> evaluate(final PsiElement t) {
+        if (invert) return new ArrayList<>(); // !* is weird but valid (empty)
+        List<PsiElement> kids = new ArrayList<>();
+        for (PsiElement c : t.getChildren()) {
+            kids.add(c);
+        }
+        return kids;
+    }
 }

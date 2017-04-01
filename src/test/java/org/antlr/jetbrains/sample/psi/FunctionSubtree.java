@@ -10,25 +10,26 @@ import org.antlr.jetbrains.sample.SampleParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/** A subtree associated with a function definition.
- *  Its scope is the set of arguments.
+/**
+ * A subtree associated with a function definition.
+ * Its scope is the set of arguments.
  */
 public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
 
-	private final SampleParserDefinition parserDefinition;
+    private final SampleParserDefinition parserDefinition;
 
-	public FunctionSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
-		super(node, parserDefinition.ID);
-		this.parserDefinition = parserDefinition;
-	}
+    public FunctionSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
+        super(node, parserDefinition.ID);
+        this.parserDefinition = parserDefinition;
+    }
 
-	@Nullable
-	@Override
-	public PsiElement resolve(PsiNamedElement element) {
+    @Nullable
+    @Override
+    public PsiElement resolve(PsiNamedElement element) {
 //		System.out.println(getClass().getSimpleName()+
 //			                   ".resolve("+myElement.getName()+
 //			                   " at "+Integer.toHexString(myElement.hashCode())+")");
-		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
-				element, "/script/function/ID");
-	}
+        return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+                element, "/script/function/ID");
+    }
 }

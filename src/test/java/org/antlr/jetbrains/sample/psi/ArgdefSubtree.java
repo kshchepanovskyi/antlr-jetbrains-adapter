@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class ArgdefSubtree extends VardefSubtree {
 
-	private final SampleParserDefinition parserDefinition;
+    private final SampleParserDefinition parserDefinition;
 
-	public ArgdefSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
-		super(node, parserDefinition);
-		this.parserDefinition = parserDefinition;
-	}
+    public ArgdefSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
+        super(node, parserDefinition);
+        this.parserDefinition = parserDefinition;
+    }
 }

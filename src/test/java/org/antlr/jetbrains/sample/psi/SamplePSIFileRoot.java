@@ -18,12 +18,12 @@ import javax.swing.*;
 
 public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
 
-	private final SampleParserDefinition parserDefinition;
+    private final SampleParserDefinition parserDefinition;
 
-	public SamplePSIFileRoot(@NotNull FileViewProvider viewProvider, SampleParserDefinition parserDefinition) {
-		super(viewProvider, SampleLanguage.INSTANCE);
-		this.parserDefinition = parserDefinition;
-	}
+    public SamplePSIFileRoot(@NotNull FileViewProvider viewProvider, SampleParserDefinition parserDefinition) {
+        super(viewProvider, SampleLanguage.INSTANCE);
+        this.parserDefinition = parserDefinition;
+    }
 
     @NotNull
     @Override
@@ -41,25 +41,26 @@ public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
         return Icons.SAMPLE_ICON;
     }
 
-	/** Return null since a file scope has no enclosing scope. It is
-	 *  not itself in a scope.
-	 */
-	@Override
-	public ScopeNode getContext() {
-		return null;
-	}
+    /**
+     * Return null since a file scope has no enclosing scope. It is
+     * not itself in a scope.
+     */
+    @Override
+    public ScopeNode getContext() {
+        return null;
+    }
 
-	@Nullable
-	@Override
-	public PsiElement resolve(PsiNamedElement element) {
+    @Nullable
+    @Override
+    public PsiElement resolve(PsiNamedElement element) {
 //		System.out.println(getClass().getSimpleName()+
 //		                   ".resolve("+element.getName()+
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
-		if ( element.getParent() instanceof CallSubtree ) {
-			return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
-					element, "/script/function/ID");
-		}
-		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
-				element, "/script/vardef/ID");
-	}
+        if (element.getParent() instanceof CallSubtree) {
+            return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+                    element, "/script/function/ID");
+        }
+        return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+                element, "/script/vardef/ID");
+    }
 }

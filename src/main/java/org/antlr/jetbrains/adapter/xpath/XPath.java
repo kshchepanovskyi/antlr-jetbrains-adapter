@@ -115,6 +115,12 @@ public class XPath {
 
     // TODO: check for invalid token/rule names, bad syntax
 
+    public static Collection<? extends PsiElement> findAll(PSIElementTypeFactory psiElementTypeFactory, PsiElement tree, String xpath) {
+        XPath p = new XPath(psiElementTypeFactory, xpath);
+        XPathElement[] elements = p.split(xpath);
+        return p.evaluate(tree, elements);
+    }
+
     public XPathElement[] split(String path) {
         ANTLRInputStream in;
         try {
@@ -222,40 +228,6 @@ public class XPath {
         }
     }
 
-
-    public static Collection<? extends PsiElement> findAll(PSIElementTypeFactory psiElementTypeFactory, PsiElement tree, String xpath) {
-        XPath p = new XPath(psiElementTypeFactory, xpath);
-        XPathElement[] elements = p.split(xpath);
-        return p.evaluate(tree, elements);
-    }
-
-    public static class DummyRoot extends CompositePsiElement {
-        public final PsiElement child;
-
-        public DummyRoot(PsiElement child) {
-            super(GeneratedParserUtilBase.DUMMY_BLOCK);
-            this.child = child;
-        }
-
-        @NotNull
-        @Override
-        public PsiElement[] getChildren() {
-            return new PsiElement[]{child};
-        }
-
-        @NotNull
-        @Override
-        public PsiReference[] getReferences() {
-            return PsiReference.EMPTY_ARRAY;
-        }
-
-        @NotNull
-        @Override
-        public Language getLanguage() {
-            return getParent().getLanguage();
-        }
-    }
-
     /**
      * Return a list of all nodes starting at {@code t} as root that satisfy the
      * path. The root {@code /} is relative to the node passed to
@@ -290,5 +262,32 @@ public class XPath {
         }
 
         return work;
+    }
+
+    public static class DummyRoot extends CompositePsiElement {
+        public final PsiElement child;
+
+        public DummyRoot(PsiElement child) {
+            super(GeneratedParserUtilBase.DUMMY_BLOCK);
+            this.child = child;
+        }
+
+        @NotNull
+        @Override
+        public PsiElement[] getChildren() {
+            return new PsiElement[]{child};
+        }
+
+        @NotNull
+        @Override
+        public PsiReference[] getReferences() {
+            return PsiReference.EMPTY_ARRAY;
+        }
+
+        @NotNull
+        @Override
+        public Language getLanguage() {
+            return getParent().getLanguage();
+        }
     }
 }

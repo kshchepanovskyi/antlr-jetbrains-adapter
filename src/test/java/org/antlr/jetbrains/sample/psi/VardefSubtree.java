@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class VardefSubtree extends IdentifierDefSubtree {
 
-	private final SampleParserDefinition parserDefinition;
+    private final SampleParserDefinition parserDefinition;
 
-	public VardefSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
-		super(node, parserDefinition.ID);
-		this.parserDefinition = parserDefinition;
-	}
+    public VardefSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
+        super(node, parserDefinition.ID);
+        this.parserDefinition = parserDefinition;
+    }
 }

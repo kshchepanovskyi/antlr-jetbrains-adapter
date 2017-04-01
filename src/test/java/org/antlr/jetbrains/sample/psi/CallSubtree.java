@@ -5,7 +5,7 @@ import org.antlr.jetbrains.adapter.psi.ANTLRPsiNode;
 import org.jetbrains.annotations.NotNull;
 
 public class CallSubtree extends ANTLRPsiNode {
-	public CallSubtree(@NotNull ASTNode node) {
-		super(node);
-	}
+    public CallSubtree(@NotNull ASTNode node) {
+        super(node);
+    }
 }
