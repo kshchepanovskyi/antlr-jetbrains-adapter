@@ -127,10 +127,10 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
 	 * @param language The language.
 	 * @param lexer The underlying ANTLR lexer.
 	 */
-	public ANTLRLexerAdaptor(Language language, Lexer lexer) {
-		this.language = language;
-		this.tokenElementTypes = PSIElementTypeFactory.getTokenIElementTypes(language);
-		this.lexer = lexer;
+    public ANTLRLexerAdaptor(Language language, Lexer lexer, PSIElementTypeFactory psiElementTypeFactory) {
+        this.language = language;
+        this.tokenElementTypes = psiElementTypeFactory.getTokenIElementTypes();
+        this.lexer = lexer;
 	}
 
 	/**

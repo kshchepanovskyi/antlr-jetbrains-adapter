@@ -35,6 +35,22 @@ dependencies {
 
 Plug-in that demonstrates the use of this library: [protostuff/protobuf-jetbrains-plugin](protostuff/protobuf-jetbrains-plugin).
 
+# Build HOW-TO
 
+Build:
 
+```bash
+./gradlew clean build
+```
 
+Deploy to bintray:
+
+```bash
+./gradlew bintrayUpload
+```
+
+Install to local maven repository:
+
+```bash
+./gradlew publishMainPublicationToMavenLocal
+```

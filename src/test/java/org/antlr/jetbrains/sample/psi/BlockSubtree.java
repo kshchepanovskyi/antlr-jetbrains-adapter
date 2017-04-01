@@ -6,13 +6,17 @@ import com.intellij.psi.PsiNamedElement;
 import org.antlr.jetbrains.adapter.SymtabUtils;
 import org.antlr.jetbrains.adapter.psi.ANTLRPsiNode;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
-import org.antlr.jetbrains.sample.SampleLanguage;
+import org.antlr.jetbrains.sample.SampleParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
-	public BlockSubtree(@NotNull ASTNode node) {
+
+	private final SampleParserDefinition parserDefinition;
+
+	public BlockSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
 		super(node);
+		this.parserDefinition = parserDefinition;
 	}
 
 	@Nullable
@@ -22,7 +26,7 @@ public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
 //		                   ".resolve("+element.getName()+
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
 
-		return SymtabUtils.resolve(this, SampleLanguage.INSTANCE,
-		                           element, "/block/vardef/ID");
+		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+				element, "/block/vardef/ID");
 	}
 }

@@ -25,6 +25,7 @@ apply plugin: 'antlr'
 dependencies {
     antlr 'org.antlr:antlr4:4.7'
     compile 'org.antlr:antlr4-runtime:4.7'
+    compile 'com.google.guava:guava:21.0'
 }
 
 apply plugin: 'idea'

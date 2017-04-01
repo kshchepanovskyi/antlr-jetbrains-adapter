@@ -10,15 +10,20 @@ import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.antlr.jetbrains.sample.Icons;
 import org.antlr.jetbrains.sample.SampleFileType;
 import org.antlr.jetbrains.sample.SampleLanguage;
+import org.antlr.jetbrains.sample.SampleParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
 public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
-    public SamplePSIFileRoot(@NotNull FileViewProvider viewProvider) {
-        super(viewProvider, SampleLanguage.INSTANCE);
-    }
+
+	private final SampleParserDefinition parserDefinition;
+
+	public SamplePSIFileRoot(@NotNull FileViewProvider viewProvider, SampleParserDefinition parserDefinition) {
+		super(viewProvider, SampleLanguage.INSTANCE);
+		this.parserDefinition = parserDefinition;
+	}
 
     @NotNull
     @Override
@@ -51,10 +56,10 @@ public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
 //		                   ".resolve("+element.getName()+
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
 		if ( element.getParent() instanceof CallSubtree ) {
-			return SymtabUtils.resolve(this, SampleLanguage.INSTANCE,
-			                           element, "/script/function/ID");
+			return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+					element, "/script/function/ID");
 		}
-		return SymtabUtils.resolve(this, SampleLanguage.INSTANCE,
-		                           element, "/script/vardef/ID");
+		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+				element, "/script/vardef/ID");
 	}
 }

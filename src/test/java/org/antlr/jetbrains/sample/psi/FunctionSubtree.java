@@ -6,7 +6,6 @@ import com.intellij.psi.PsiNamedElement;
 import org.antlr.jetbrains.adapter.SymtabUtils;
 import org.antlr.jetbrains.adapter.psi.IdentifierDefSubtree;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
-import org.antlr.jetbrains.sample.SampleLanguage;
 import org.antlr.jetbrains.sample.SampleParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,8 +14,12 @@ import org.jetbrains.annotations.Nullable;
  *  Its scope is the set of arguments.
  */
 public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
-	public FunctionSubtree(@NotNull ASTNode node) {
-		super(node, SampleParserDefinition.ID);
+
+	private final SampleParserDefinition parserDefinition;
+
+	public FunctionSubtree(@NotNull ASTNode node, SampleParserDefinition parserDefinition) {
+		super(node, parserDefinition.ID);
+		this.parserDefinition = parserDefinition;
 	}
 
 	@Nullable
@@ -25,7 +28,7 @@ public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
 //		System.out.println(getClass().getSimpleName()+
 //			                   ".resolve("+myElement.getName()+
 //			                   " at "+Integer.toHexString(myElement.hashCode())+")");
-		return SymtabUtils.resolve(this, SampleLanguage.INSTANCE,
-		                           element, "/script/function/ID");
+		return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+				element, "/script/function/ID");
 	}
 }

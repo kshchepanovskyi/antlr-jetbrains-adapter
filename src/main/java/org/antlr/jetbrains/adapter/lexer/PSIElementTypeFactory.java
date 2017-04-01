@@ -3,113 +3,116 @@ package org.antlr.jetbrains.adapter.lexer;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.misc.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
- * The factory that automatically maps all tokens and rule names into
+ * The factory that maps all tokens and rule names into
  * IElementType objects: {@link TokenIElementType} and {@link RuleIElementType}.
- * <p>
- * This caches all mappings for each Language that use this factory. I.e.,
- * it's not keeping an instance per plugin/Language.
  */
 public class PSIElementTypeFactory {
-    private static final Map<Language, List<TokenIElementType>> tokenIElementTypesCache = new HashMap<>();
-    private static final Map<Language, List<RuleIElementType>> ruleIElementTypesCache = new HashMap<>();
-    private static final Map<Language, Map<String, Integer>> tokenNamesCache = new HashMap<>();
-    private static final Map<Language, Map<String, Integer>> ruleNamesCache = new HashMap<>();
-    private static final Map<Language, TokenIElementType> eofIElementTypesCache = new HashMap<>();
 
-    private PSIElementTypeFactory() {
+    private final List<TokenIElementType> tokenIElementTypes;
+    private final List<RuleIElementType> ruleIElementTypes;
+    private final Map<String, Integer> tokenNames;
+    private final Map<String, Integer> ruleNames;
+    private final TokenIElementType eofIElementType;
+
+    private PSIElementTypeFactory(Language language, Parser parser) {
+        Vocabulary vocabulary = parser.getVocabulary();
+        String[] ruleNames = parser.getRuleNames();
+        tokenIElementTypes = createTokenIElementTypes(language, vocabulary);
+        ruleIElementTypes = createRuleIElementTypes(language, ruleNames);
+        tokenNames = createTokenTypeMap(vocabulary);
+        this.ruleNames = createRuleIndexMap(ruleNames);
+        eofIElementType = new TokenIElementType(Token.EOF, "EOF", language);
     }
 
-    public static void defineLanguageIElementTypes(Language language,
-                                                   String[] tokenNames,
-                                                   String[] ruleNames) {
-        synchronized (PSIElementTypeFactory.class) {
-            tokenIElementTypesCache.computeIfAbsent(language, l -> createTokenIElementTypes(l, tokenNames));
-            ruleIElementTypesCache.computeIfAbsent(language, l -> createRuleIElementTypes(l, ruleNames));
-            tokenNamesCache.computeIfAbsent(language, k -> createTokenTypeMap(tokenNames));
-            ruleNamesCache.computeIfAbsent(language, k -> createRuleIndexMap(ruleNames));
-        }
+    public static PSIElementTypeFactory create(Language language, Parser parser) {
+        return new PSIElementTypeFactory(language, parser);
     }
 
-    public static TokenIElementType getEofElementType(Language language) {
-        return eofIElementTypesCache.computeIfAbsent(language,
-                l -> new TokenIElementType(Token.EOF, "EOF", l));
+    public TokenIElementType getEofElementType() {
+        return eofIElementType;
     }
 
-    public static List<TokenIElementType> getTokenIElementTypes(Language language) {
-        return tokenIElementTypesCache.get(language);
+    public List<TokenIElementType> getTokenIElementTypes() {
+        return tokenIElementTypes;
     }
 
-    public static List<RuleIElementType> getRuleIElementTypes(Language language) {
-        return ruleIElementTypesCache.get(language);
+    public List<RuleIElementType> getRuleIElementTypes() {
+        return ruleIElementTypes;
     }
 
-    public static Map<String, Integer> getRuleNameToIndexMap(Language language) {
-        return ruleNamesCache.get(language);
+    public Map<String, Integer> getRuleNameToIndexMap() {
+        return ruleNames;
     }
 
-    public static Map<String, Integer> getTokenNameToTypeMap(Language language) {
-        return tokenNamesCache.get(language);
+    public Map<String, Integer> getTokenNameToTypeMap() {
+        return tokenNames;
     }
 
     /**
      * Get a map from token names to token types.
      */
-    public static Map<String, Integer> createTokenTypeMap(String[] tokenNames) {
-        return Utils.toMap(tokenNames);
+    private Map<String, Integer> createTokenTypeMap(Vocabulary vocabulary) {
+        return IntStream.rangeClosed(0, vocabulary.getMaxTokenType())
+                .boxed()
+                .collect(Collectors.toMap(
+                        vocabulary::getDisplayName,
+                        Function.identity()));
     }
 
     /**
      * Get a map from rule names to rule indexes.
      */
-    public static Map<String, Integer> createRuleIndexMap(String[] ruleNames) {
+    private Map<String, Integer> createRuleIndexMap(String[] ruleNames) {
         return Utils.toMap(ruleNames);
     }
 
     @NotNull
-    public static List<TokenIElementType> createTokenIElementTypes(Language language, String[] tokenNames) {
-        List<TokenIElementType> result;
-        TokenIElementType[] elementTypes = new TokenIElementType[tokenNames.length];
-        for (int i = 0; i < tokenNames.length; i++) {
-            if (tokenNames[i] != null) {
-                elementTypes[i] = new TokenIElementType(i, tokenNames[i], language);
-            }
-        }
-
-        result = Collections.unmodifiableList(Arrays.asList(elementTypes));
-        return result;
+    private List<TokenIElementType> createTokenIElementTypes(Language language, Vocabulary vocabulary) {
+        return IntStream.rangeClosed(0, vocabulary.getMaxTokenType())
+                .boxed()
+                .map(i -> {
+                    String name = vocabulary.getDisplayName(i);
+                    return new TokenIElementType(i, name, language);
+                })
+                .collect(Collectors.toList());
     }
 
     @NotNull
-    public static List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames) {
+    private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames) {
         List<RuleIElementType> result;
         RuleIElementType[] elementTypes = new RuleIElementType[ruleNames.length];
         for (int i = 0; i < ruleNames.length; i++) {
             elementTypes[i] = new RuleIElementType(i, ruleNames[i], language);
         }
-
         result = Collections.unmodifiableList(Arrays.asList(elementTypes));
         return result;
     }
 
-    public static TokenSet createTokenSet(Language language, int... types) {
-        List<TokenIElementType> tokenIElementTypes = getTokenIElementTypes(language);
-
+    public TokenSet createTokenSet(int... types) {
+        List<TokenIElementType> tokenIElementTypes = getTokenIElementTypes();
         IElementType[] elementTypes = new IElementType[types.length];
         for (int i = 0; i < types.length; i++) {
             if (types[i] == Token.EOF) {
-                elementTypes[i] = getEofElementType(language);
+                elementTypes[i] = getEofElementType();
             } else {
                 elementTypes[i] = tokenIElementTypes.get(types[i]);
             }
         }
-
         return TokenSet.create(elementTypes);
     }
 }

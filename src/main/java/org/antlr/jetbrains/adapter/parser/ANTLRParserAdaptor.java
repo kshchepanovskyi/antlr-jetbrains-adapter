@@ -6,6 +6,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.jetbrains.adapter.lexer.PSIElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.PSITokenSource;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Parser;
@@ -19,15 +20,17 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ANTLRParserAdaptor implements PsiParser {
 	protected final Language language;
 	protected final Parser parser;
+    private final PSIElementTypeFactory psiElementTypeFactory;
 
 	/** Create a jetbrains adaptor for an ANTLR parser object. When
 	 *  the IDE requests a {@link #parse(IElementType, PsiBuilder)},
 	 *  the token stream will be set on the parser.
 	 */
-	public ANTLRParserAdaptor(Language language, Parser parser) {
-		this.language = language;
+    public ANTLRParserAdaptor(Language language, Parser parser, PSIElementTypeFactory psiElementTypeFactory) {
+        this.language = language;
 		this.parser = parser;
-	}
+        this.psiElementTypeFactory = psiElementTypeFactory;
+    }
 
 	public Language getLanguage() {
 		return language;
@@ -85,6 +88,6 @@ public abstract class ANTLRParserAdaptor implements PsiParser {
 	protected abstract ParseTree parse(Parser parser, IElementType root);
 
 	protected ANTLRParseTreeToPSIConverter createListener(Parser parser, IElementType root, PsiBuilder builder) {
-		return new ANTLRParseTreeToPSIConverter(language, parser, builder);
-	}
+        return new ANTLRParseTreeToPSIConverter(language, parser, psiElementTypeFactory, builder);
+    }
 }

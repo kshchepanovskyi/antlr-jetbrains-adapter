@@ -4,21 +4,22 @@ import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.testFramework.ParsingTestCase;
+import org.antlr.jetbrains.sample.SampleLanguage;
+import org.antlr.jetbrains.sample.SampleParserDefinition;
 
 import java.io.IOException;
 import java.util.Collection;
-
-
-import org.antlr.jetbrains.sample.SampleLanguage;
-import org.antlr.jetbrains.sample.SampleParserDefinition;
 
 /**
  * @author Kostiantyn Shchepanovskyi
  */
 public class XPathTest extends ParsingTestCase {
 
+    private static final SampleParserDefinition PARSER_DEFINITION =
+            new SampleParserDefinition();
+
     public XPathTest() {
-        super("", "Sample", new SampleParserDefinition());
+        super("", "Sample", PARSER_DEFINITION);
     }
 
     public void testSingleVarDef() throws Exception {
@@ -40,8 +41,8 @@ public class XPathTest extends ParsingTestCase {
     public void testFuncNames() throws Exception {
         String code = loadFile("src/test/resources/test.sample");
         String output =
-                "f\n"+
-                        "g\n"+
+                "f\n" +
+                        "g\n" +
                         "h";
         String xpath = "/script/function/ID";
         checkXPathResults(code, xpath, output);
@@ -50,14 +51,14 @@ public class XPathTest extends ParsingTestCase {
     public void testAllIDs() throws Exception {
         String code = loadFile("src/test/resources/test.sample");
         String output =
-                "f\n"+
-                        "x\n"+
-                        "y\n"+
-                        "x\n"+
-                        "x\n"+
-                        "g\n"+
-                        "x\n"+
-                        "y\n"+
+                "f\n" +
+                        "x\n" +
+                        "y\n" +
+                        "x\n" +
+                        "x\n" +
+                        "g\n" +
+                        "x\n" +
+                        "y\n" +
                         "h\n" +
                         "z";
         String xpath = "//ID";
@@ -67,7 +68,7 @@ public class XPathTest extends ParsingTestCase {
     public void testAnyVarDef() throws Exception {
         String code = loadFile("src/test/resources/test.sample");
         String output =
-                "var y = x\n"+
+                "var y = x\n" +
                         "var z = 9";
         String xpath = "//vardef";
         checkXPathResults(code, xpath, output);
@@ -85,10 +86,10 @@ public class XPathTest extends ParsingTestCase {
     public void testAllVarDefIDsInScopes() throws Exception {
         String code = loadFile("src/test/resources/bubblesort.sample");
         String output =
-                "x\n"+
-                        "i\n"+
-                        "j\n"+
-                        "swap\n"+
+                "x\n" +
+                        "i\n" +
+                        "j\n" +
+                        "swap\n" +
                         "x";
         String xpath = "//block/vardef/ID";
         checkXPathResults(code, xpath, output);
@@ -97,7 +98,7 @@ public class XPathTest extends ParsingTestCase {
     public void testTopLevelVarDefIDsInScopes() throws Exception {
         String code = loadFile("src/test/resources/bubblesort.sample");
         String output =
-                "x\n"+
+                "x\n" +
                         "i";
         String xpath = "//function/block/vardef/ID";
         checkXPathResults(code, xpath, output);
@@ -106,13 +107,13 @@ public class XPathTest extends ParsingTestCase {
     public void testRuleUnderWildcard() throws Exception {
         String code = loadFile("src/test/resources/test.sample");
         String output =
-                        "x\n"+
-                        "[\n"+
-                        "1\n"+
-                        "]\n"+
-                        "=\n"+
-                        "\"sdflkjsdf\"\n"+
-                        "return\n"+
+                "x\n" +
+                        "[\n" +
+                        "1\n" +
+                        "]\n" +
+                        "=\n" +
+                        "\"sdflkjsdf\"\n" +
+                        "return\n" +
                         "false";
         String xpath = "//function/*/statement/*";
         checkXPathResults(code, xpath, output);
@@ -121,8 +122,8 @@ public class XPathTest extends ParsingTestCase {
     public void testAllNonWhileTokens() throws Exception {
         String code = loadFile("src/test/resources/bubblesort.sample");
         String output =
-                "(\n"+
-                        ")\n"+
+                "(\n" +
+                        ")\n" +
                         "return";
         String xpath = "/script/function/block/statement/!'while'";
         checkXPathResults(code, xpath, output);
@@ -139,27 +140,28 @@ public class XPathTest extends ParsingTestCase {
     public void testWildcardUnderFuncThenJustTokens() throws Exception {
         String code = loadFile("src/test/resources/test.sample");
         String output =
-                "func\n"+
-                        "f\n"+
-                        "(\n"+
-                        ")\n"+
-                        "func\n"+
-                        "g\n"+
-                        "(\n"+
-                        ")\n"+
-                        "func\n"+
-                        "h\n"+
-                        "(\n"+
-                        ")\n"+
+                "func\n" +
+                        "f\n" +
+                        "(\n" +
+                        ")\n" +
+                        "func\n" +
+                        "g\n" +
+                        "(\n" +
+                        ")\n" +
+                        "func\n" +
+                        "h\n" +
+                        "(\n" +
+                        ")\n" +
                         ":";
         String xpath = "//function/*";
         myFile = createPsiFile("a", code);
         ensureParsed(myFile);
         assertEquals(code, myFile.getText());
         final StringBuilder buf = new StringBuilder();
-        Collection<? extends PsiElement> nodes = XPath.findAll(SampleLanguage.INSTANCE, myFile, xpath);
+
+        Collection<? extends PsiElement> nodes = XPath.findAll(PARSER_DEFINITION.psiElementTypeFactory, myFile, xpath);
         for (PsiElement n : nodes) {
-            if ( n instanceof LeafPsiElement) {
+            if (n instanceof LeafPsiElement) {
                 buf.append(n.getText());
                 buf.append("\n");
             }
@@ -177,7 +179,7 @@ public class XPathTest extends ParsingTestCase {
         myFile = createPsiFile("a", code);
         ensureParsed(myFile);
         assertEquals(code, myFile.getText());
-        Collection<? extends PsiElement> nodes = XPath.findAll(language, myFile, xpath);
+        Collection<? extends PsiElement> nodes = XPath.findAll(PARSER_DEFINITION.psiElementTypeFactory, myFile, xpath);
         StringBuilder buf = new StringBuilder();
         for (PsiElement t : nodes) {
             buf.append(t.getText());
