@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.IntervalSet;
+import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 
 /**
  * Adapt ANTLR's DefaultErrorStrategy so that we add error nodes
@@ -17,7 +18,7 @@ public class ErrorStrategyAdaptor extends DefaultErrorStrategy {
     protected void consumeUntil(Parser recognizer, IntervalSet set) {
         Token o = recognizer.getCurrentToken();
         if (o.getType() == Token.EOF) {
-            recognizer.getRuleContext().addErrorNode(o);
+            recognizer.getRuleContext().addErrorNode(new ErrorNodeImpl(o));
         }
         super.consumeUntil(recognizer, set);
     }

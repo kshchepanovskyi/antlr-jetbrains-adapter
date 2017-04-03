@@ -2,9 +2,9 @@ package org.antlr.jetbrains;
 
 import org.antlr.jetbrains.sample.parser.SampleLanguageLexer;
 import org.antlr.jetbrains.sample.parser.SampleLanguageParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -28,7 +28,7 @@ public class SampleParserTest {
     }
 
     private SampleLanguageParser.ScriptContext parseScript(String input) {
-        CharStream stream = new ANTLRInputStream(input);
+        CharStream stream = CharStreams.fromString(input);
         SampleLanguageLexer lexer = new SampleLanguageLexer(stream);
         lexer.addErrorListener(ERROR_LISTENER);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);

@@ -37,8 +37,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +47,8 @@ import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
 import org.antlr.jetbrains.adapter.psi.Trees;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.Token;
@@ -129,12 +128,7 @@ public class XPath {
     }
 
     private XPathElement[] split(String path) {
-        ANTLRInputStream in;
-        try {
-            in = new ANTLRInputStream(new StringReader(path));
-        } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not read path: " + path, ioe);
-        }
+        CodePointCharStream in = CharStreams.fromString(path);
         XPathLexer lexer = new XPathLexer(in) {
             public void recover(LexerNoViableAltException e) {
                 throw e;

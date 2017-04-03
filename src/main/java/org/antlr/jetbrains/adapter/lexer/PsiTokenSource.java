@@ -23,7 +23,7 @@ import org.antlr.v4.runtime.misc.Pair;
  */
 public class PsiTokenSource implements TokenSource {
     protected PsiBuilder builder;
-    protected TokenFactory tokenFactory = CommonTokenFactory.DEFAULT;
+    protected TokenFactory<?> tokenFactory = CommonTokenFactory.DEFAULT;
 
     public PsiTokenSource(PsiBuilder builder) {
         this.builder = builder;
