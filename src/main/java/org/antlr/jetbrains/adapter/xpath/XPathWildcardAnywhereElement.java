@@ -28,22 +28,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.psi.PsiElement;
-import org.antlr.jetbrains.adapter.psi.Trees;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import org.antlr.jetbrains.adapter.psi.Trees;
 
 public class XPathWildcardAnywhereElement extends XPathElement {
+
     public XPathWildcardAnywhereElement() {
         super(XPath.WILDCARD);
     }
 
     @Override
     public Collection<PsiElement> evaluate(PsiElement t) {
-        if (invert) return new ArrayList<>(); // !* is weird but valid (empty)
+        if (invert) {
+            // !* is weird but valid (empty)
+            return new ArrayList<>();
+        }
         return Trees.getDescendants(t);
     }
 }

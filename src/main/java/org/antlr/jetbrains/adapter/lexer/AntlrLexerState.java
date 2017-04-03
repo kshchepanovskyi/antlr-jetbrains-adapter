@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * </ol>
  */
 @Immutable
-public class ANTLRLexerState {
+public class AntlrLexerState {
     /**
      * This is the backing field for {@link #getMode}.
      */
@@ -53,14 +53,14 @@ public class ANTLRLexerState {
     private int cachedHashCode;
 
     /**
-     * Constructs a new instance of {@link ANTLRLexerState}
+     * Constructs a new instance of {@link AntlrLexerState}
      * containing the mode and mode stack information for an ANTLR
      * lexer.
      *
-     * @param mode      The current lexer mode, {@link Lexer#_mode}.
+     * @param mode The current lexer mode, {@link Lexer#_mode}.
      * @param modeStack The lexer mode stack, {@link Lexer#_modeStack}, or {@code null} .
      */
-    public ANTLRLexerState(int mode, @Nullable IntegerStack modeStack) {
+    public AntlrLexerState(int mode, @Nullable IntegerStack modeStack) {
         this.mode = mode;
         this.modeStack = modeStack != null ? modeStack.toArray() : null;
     }
@@ -87,6 +87,9 @@ public class ANTLRLexerState {
         return modeStack;
     }
 
+    /**
+     * Set given lexer to the current state.
+     */
     public void apply(@NotNull Lexer lexer) {
         lexer._mode = getMode();
         lexer._modeStack.clear();
@@ -110,11 +113,11 @@ public class ANTLRLexerState {
             return true;
         }
 
-        if (!(obj instanceof ANTLRLexerState)) {
+        if (!(obj instanceof AntlrLexerState)) {
             return false;
         }
 
-        ANTLRLexerState other = (ANTLRLexerState) obj;
+        AntlrLexerState other = (AntlrLexerState) obj;
         return this.mode == other.mode
                 && ObjectEqualityComparator.INSTANCE.equals(this.modeStack, other.modeStack);
     }

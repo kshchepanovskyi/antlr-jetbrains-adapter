@@ -5,6 +5,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import javax.swing.Icon;
 import org.antlr.jetbrains.adapter.SymtabUtils;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.antlr.jetbrains.sample.Icons;
@@ -14,13 +15,11 @@ import org.antlr.jetbrains.sample.SampleParserDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-
-public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
+public class SamplePsiFileRoot extends PsiFileBase implements ScopeNode {
 
     private final SampleParserDefinition parserDefinition;
 
-    public SamplePSIFileRoot(@NotNull FileViewProvider viewProvider, SampleParserDefinition parserDefinition) {
+    public SamplePsiFileRoot(@NotNull FileViewProvider viewProvider, SampleParserDefinition parserDefinition) {
         super(viewProvider, SampleLanguage.INSTANCE);
         this.parserDefinition = parserDefinition;
     }
@@ -53,14 +52,11 @@ public class SamplePSIFileRoot extends PsiFileBase implements ScopeNode {
     @Nullable
     @Override
     public PsiElement resolve(PsiNamedElement element) {
-//		System.out.println(getClass().getSimpleName()+
-//		                   ".resolve("+element.getName()+
-//		                   " at "+Integer.toHexString(element.hashCode())+")");
         if (element.getParent() instanceof CallSubtree) {
-            return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+            return SymtabUtils.resolve(this, parserDefinition.PSI_ELEMENT_TYPE_FACTORY,
                     element, "/script/function/ID");
         }
-        return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+        return SymtabUtils.resolve(this, parserDefinition.PSI_ELEMENT_TYPE_FACTORY,
                 element, "/script/vardef/ID");
     }
 }

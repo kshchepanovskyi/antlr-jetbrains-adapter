@@ -28,15 +28,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
 
 public class XPathTokenElement extends XPathElement {
     protected int tokenType;
@@ -54,8 +54,8 @@ public class XPathTokenElement extends XPathElement {
             IElementType elementType = c.getNode().getElementType();
             if (elementType instanceof TokenIElementType) {
                 TokenIElementType tokEl = (TokenIElementType) elementType;
-                if ((tokEl.getANTLRTokenType() == tokenType && !invert) ||
-                        (tokEl.getANTLRTokenType() != tokenType && invert)) {
+                if ((tokEl.getAntlrTokenType() == tokenType && !invert)
+                        || (tokEl.getAntlrTokenType() != tokenType && invert)) {
                     nodes.add(c);
                 }
             }

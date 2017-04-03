@@ -14,15 +14,15 @@ import org.antlr.jetbrains.adapter.SymtabUtils;
  * MyLanguageIDNode. To enable rename, find usages, etc... that
  * node will need to implement PsiNamedElement.
  */
-public class ANTLRPsiLeafNode extends LeafPsiElement {
-    public ANTLRPsiLeafNode(IElementType type, CharSequence text) {
+public class AntlrPsiLeafNode extends LeafPsiElement {
+    public AntlrPsiLeafNode(IElementType type, CharSequence text) {
         super(type, text);
     }
 
     /**
      * We're a leaf node so must start looking at parent node for a scope.
      * This assumes a reasonable getContext() implementation for your
-     * internal, non-leaf PSI nodes. It's easiest to use {@link ANTLRPsiNode}
+     * internal, non-leaf PSI nodes. It's easiest to use {@link AntlrPsiNode}
      * subclasses for your internal notes.
      */
     @Override

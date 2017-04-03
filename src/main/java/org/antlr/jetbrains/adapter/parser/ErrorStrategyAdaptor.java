@@ -32,7 +32,8 @@ public class ErrorStrategyAdaptor extends DefaultErrorStrategy {
         Token missingSymbol = super.getMissingSymbol(recognizer);
         // alter the default missing symbol.
         if (missingSymbol instanceof CommonToken) {
-            int start, stop;
+            int start;
+            int stop;
             Token current = recognizer.getCurrentToken();
             start = current.getStartIndex();
             stop = current.getStopIndex();

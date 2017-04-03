@@ -3,12 +3,6 @@ package org.antlr.jetbrains.adapter.lexer;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.Vocabulary;
-import org.antlr.v4.runtime.misc.Utils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +10,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.Vocabulary;
+import org.antlr.v4.runtime.misc.Utils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The factory that maps all tokens and rule names into
  * IElementType objects: {@link TokenIElementType} and {@link RuleIElementType}.
  */
-public class PSIElementTypeFactory {
+public class PsiElementTypeFactory {
 
     private final List<TokenIElementType> tokenIElementTypes;
     private final List<RuleIElementType> ruleIElementTypes;
@@ -29,7 +28,7 @@ public class PSIElementTypeFactory {
     private final Map<String, Integer> ruleNames;
     private final TokenIElementType eofIElementType;
 
-    private PSIElementTypeFactory(Language language, Parser parser) {
+    private PsiElementTypeFactory(Language language, Parser parser) {
         Vocabulary vocabulary = parser.getVocabulary();
         String[] ruleNames = parser.getRuleNames();
         tokenIElementTypes = createTokenIElementTypes(language, vocabulary);
@@ -39,8 +38,8 @@ public class PSIElementTypeFactory {
         eofIElementType = new TokenIElementType(Token.EOF, "EOF", language);
     }
 
-    public static PSIElementTypeFactory create(Language language, Parser parser) {
-        return new PSIElementTypeFactory(language, parser);
+    public static PsiElementTypeFactory create(Language language, Parser parser) {
+        return new PsiElementTypeFactory(language, parser);
     }
 
     public TokenIElementType getEofElementType() {
@@ -103,6 +102,9 @@ public class PSIElementTypeFactory {
         return result;
     }
 
+    /**
+     * Create token set from given tokens.
+     */
     public TokenSet createTokenSet(int... types) {
         List<TokenIElementType> tokenIElementTypes = getTokenIElementTypes();
         IElementType[] elementTypes = new IElementType[types.length];

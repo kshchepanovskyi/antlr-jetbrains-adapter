@@ -2,11 +2,18 @@ package org.antlr.jetbrains;
 
 import org.antlr.jetbrains.sample.parser.SampleLanguageLexer;
 import org.antlr.jetbrains.sample.parser.SampleLanguageParser;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * Basic tests to ensure adapter works.
+ *
  * @author Kostiantyn Shchepanovskyi
  */
 public class SampleParserTest {

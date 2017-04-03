@@ -12,15 +12,20 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.jetbrains.adapter.lexer.ANTLRLexerAdaptor;
-import org.antlr.jetbrains.adapter.lexer.PSIElementTypeFactory;
+import org.antlr.jetbrains.adapter.lexer.AntlrLexerAdapter;
+import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
-import org.antlr.jetbrains.adapter.parser.ANTLRParserAdaptor;
-import org.antlr.jetbrains.adapter.psi.ANTLRPsiNode;
+import org.antlr.jetbrains.adapter.parser.AntlrParserAdaptor;
+import org.antlr.jetbrains.adapter.psi.AntlrPsiNode;
 import org.antlr.jetbrains.sample.parser.SampleLanguageLexer;
 import org.antlr.jetbrains.sample.parser.SampleLanguageParser;
-import org.antlr.jetbrains.sample.psi.*;
+import org.antlr.jetbrains.sample.psi.ArgdefSubtree;
+import org.antlr.jetbrains.sample.psi.BlockSubtree;
+import org.antlr.jetbrains.sample.psi.CallSubtree;
+import org.antlr.jetbrains.sample.psi.FunctionSubtree;
+import org.antlr.jetbrains.sample.psi.SamplePsiFileRoot;
+import org.antlr.jetbrains.sample.psi.VardefSubtree;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NotNull;
@@ -29,35 +34,36 @@ public class SampleParserDefinition implements ParserDefinition {
     public static final IFileElementType FILE =
             new IFileElementType(SampleLanguage.INSTANCE);
 
-    public final PSIElementTypeFactory psiElementTypeFactory = PSIElementTypeFactory.create(SampleLanguage.INSTANCE, new SampleLanguageParser(null));
+    public static final PsiElementTypeFactory PSI_ELEMENT_TYPE_FACTORY = PsiElementTypeFactory.create(SampleLanguage.INSTANCE, new SampleLanguageParser(null));
 
-    public final TokenIElementType ID = psiElementTypeFactory.getTokenIElementTypes()
+    public static final TokenIElementType ID = PSI_ELEMENT_TYPE_FACTORY.getTokenIElementTypes()
             .get(SampleLanguageLexer.ID);
 
-    public final TokenSet COMMENTS =
-            psiElementTypeFactory.createTokenSet(
+    public static final TokenSet COMMENTS =
+            PSI_ELEMENT_TYPE_FACTORY.createTokenSet(
                     SampleLanguageLexer.COMMENT,
                     SampleLanguageLexer.LINE_COMMENT);
 
-    public final TokenSet WHITESPACE =
-            psiElementTypeFactory.createTokenSet(
+    public static final TokenSet WHITESPACE =
+            PSI_ELEMENT_TYPE_FACTORY.createTokenSet(
                     SampleLanguageLexer.WS);
 
-    public final TokenSet STRING =
-            psiElementTypeFactory.createTokenSet(
+    public static final TokenSet STRING =
+            PSI_ELEMENT_TYPE_FACTORY.createTokenSet(
                     SampleLanguageLexer.STRING);
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
         SampleLanguageLexer lexer = new SampleLanguageLexer(null);
-        return new ANTLRLexerAdaptor(SampleLanguage.INSTANCE, lexer, psiElementTypeFactory);
+        return new AntlrLexerAdapter(SampleLanguage.INSTANCE, lexer, PSI_ELEMENT_TYPE_FACTORY);
     }
 
+    @Override
     @NotNull
     public PsiParser createParser(final Project project) {
         final SampleLanguageParser parser = new SampleLanguageParser(null);
-        return new ANTLRParserAdaptor(SampleLanguage.INSTANCE, parser, psiElementTypeFactory) {
+        return new AntlrParserAdaptor(SampleLanguage.INSTANCE, parser, PSI_ELEMENT_TYPE_FACTORY) {
             @Override
             protected ParseTree parse(Parser parser, IElementType root) {
                 // start rule depends on root passed in; sometimes we want to create an ID node etc...
@@ -115,7 +121,7 @@ public class SampleParserDefinition implements ParserDefinition {
      */
     @Override
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return new SamplePSIFileRoot(viewProvider, this);
+        return new SamplePsiFileRoot(viewProvider, this);
     }
 
     /**
@@ -132,21 +138,21 @@ public class SampleParserDefinition implements ParserDefinition {
      * node returned from parsetree->PSI conversion.  But, it
      * must be a CompositeElement! The adaptor calls
      * rootMarker.done(root) to finish off the PSI conversion.
-     * See {@link ANTLRParserAdaptor#parse(IElementType root,
+     * See {@link AntlrParserAdaptor#parse(IElementType root,
      * PsiBuilder)}
      * <p>
      * If you don't care to distinguish PSI nodes by type, it is
-     * sufficient to create a {@link ANTLRPsiNode} around
+     * sufficient to create a {@link AntlrPsiNode} around
      * the parse tree node
      */
     @NotNull
     public PsiElement createElement(ASTNode node) {
         IElementType elType = node.getElementType();
         if (elType instanceof TokenIElementType) {
-            return new ANTLRPsiNode(node);
+            return new AntlrPsiNode(node);
         }
         if (!(elType instanceof RuleIElementType)) {
-            return new ANTLRPsiNode(node);
+            return new AntlrPsiNode(node);
         }
         RuleIElementType ruleElType = (RuleIElementType) elType;
         switch (ruleElType.getRuleIndex()) {
@@ -161,7 +167,7 @@ public class SampleParserDefinition implements ParserDefinition {
             case SampleLanguageParser.RULE_call_expr:
                 return new CallSubtree(node);
             default:
-                return new ANTLRPsiNode(node);
+                return new AntlrPsiNode(node);
         }
     }
 }

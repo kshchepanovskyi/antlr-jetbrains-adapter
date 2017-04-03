@@ -3,15 +3,22 @@ package org.antlr.jetbrains.adapter.parser;
 import com.intellij.lang.Language;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import org.antlr.jetbrains.adapter.lexer.PSIElementTypeFactory;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.util.*;
 
 /**
  * This is how we build an intellij PSI tree from an ANTLR parse tree.
@@ -21,9 +28,9 @@ import java.util.*;
  * The list of SyntaxError objects are pulled from the parser and used
  * for error message highlighting (error nodes don't have the info).
  */
-public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
+public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
     protected final Language language;
-    protected final PSIElementTypeFactory psiElementTypeFactory;
+    protected final PsiElementTypeFactory psiElementTypeFactory;
     protected final PsiBuilder builder;
     protected final Deque<PsiBuilder.Marker> markers = new ArrayDeque<>();
     protected final List<TokenIElementType> tokenElementTypes;
@@ -34,7 +41,10 @@ public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
      */
     protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<>();
 
-    public ANTLRParseTreeToPSIConverter(Language language, Parser parser, PSIElementTypeFactory psiElementTypeFactory, PsiBuilder builder) {
+    /**
+     * Create new instance of ANTLR parse tree to PSI converter.
+     */
+    public AntlrParseTreeToPsiConverter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory, PsiBuilder builder) {
         this.language = language;
         this.psiElementTypeFactory = psiElementTypeFactory;
         this.builder = builder;
@@ -47,9 +57,9 @@ public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
                 syntaxErrors = ((SyntaxErrorListener) listener).getErrorMap();
                 for (SyntaxError error : syntaxErrors.values()) {
                     // record first error per token
-                    int StartIndex = error.getOffendingSymbol().getStartIndex();
-                    if (!tokenToErrorMap.containsKey(StartIndex)) {
-                        tokenToErrorMap.put(StartIndex, error);
+                    int startIndex = error.getOffendingSymbol().getStartIndex();
+                    if (!tokenToErrorMap.containsKey(startIndex)) {
+                        tokenToErrorMap.put(startIndex, error);
                     }
                 }
             }
@@ -123,9 +133,9 @@ public class ANTLRParseTreeToPSIConverter implements ParseTreeListener {
 
         if (error != null) {
             PsiBuilder.Marker errorMarker = builder.mark();
-            if (badToken.getStartIndex() >= 0 &&
-                    badToken.getType() != Token.EOF &&
-                    !isConjuredToken) {
+            if (badToken.getStartIndex() >= 0
+                    && badToken.getType() != Token.EOF
+                    && !isConjuredToken) {
                 // we advance lexer if error occurred at a real token
                 // Missing tokens should highlight the token at the missing position
                 // but can't consume a token that does not exist.

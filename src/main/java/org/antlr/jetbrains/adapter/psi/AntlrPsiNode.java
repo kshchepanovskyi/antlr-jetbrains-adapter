@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents an internal, non-leaf "composite" PSI
- * node. The term "ANTLRPsiNode" is somewhat of a misnomer as it's
+ * node. The term "AntlrPsiNode" is somewhat of a misnomer as it's
  * really just a PSI node but make sure that getChildren() acts as I
  * would expect, returning all children.
  * <p>
@@ -21,16 +21,16 @@ import org.jetbrains.annotations.NotNull;
  * ParserDefinition.createElement() with a TokenIElementType (usually
  * identifier) as the root of the generated PSI tree. So, when
  * looking for an ID, you might get a tree like (ID (expr (primary
- * ID))). Weird but whatever. The root ID is an ANTLRPsiNode and the
- * leaf ID is an ANTLRPsiLeafNode.
+ * ID))). Weird but whatever. The root ID is an AntlrPsiNode and the
+ * leaf ID is an AntlrPsiLeafNode.
  * <p>
  * I've come to the conclusion that it's much easier to build plug-ins
  * when you have PSI trees with heterogeneous types. I typically make
- * subclasses of ANTLRPsiNode for each kind of declaration for use with
+ * subclasses of AntlrPsiNode for each kind of declaration for use with
  * renaming, find usages, and jump to declaration.
  */
-public class ANTLRPsiNode extends ASTWrapperPsiElement {
-    public ANTLRPsiNode(@NotNull ASTNode node) {
+public class AntlrPsiNode extends ASTWrapperPsiElement {
+    public AntlrPsiNode(@NotNull ASTNode node) {
         super(node);
     }
 

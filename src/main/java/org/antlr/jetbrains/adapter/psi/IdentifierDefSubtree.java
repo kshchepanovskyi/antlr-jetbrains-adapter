@@ -21,10 +21,10 @@ import org.jetbrains.annotations.Nullable;
  * <a href="https://devnet.jetbrains.com/message/5566711#5566711">forum thread</a>
  * for more details.
  */
-public abstract class IdentifierDefSubtree extends ANTLRPsiNode implements PsiNameIdentifierOwner {
+public abstract class IdentifierDefSubtree extends AntlrPsiNode implements PsiNameIdentifierOwner {
     /**
      * Gets the {@link IElementType} of the ID/Identifier rule for
-     * use in {@link #getNameIdentifier}
+     * use in {@link #getNameIdentifier}.
      */
     private final IElementType idElementType;
 
@@ -66,8 +66,6 @@ public abstract class IdentifierDefSubtree extends ANTLRPsiNode implements PsiNa
      */
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-//		System.out.println(getClass().getSimpleName()+".setName("+name+") on "+
-//			                   this+" at "+Integer.toHexString(this.hashCode()));
         PsiNamedElement idNode = (PsiNamedElement) getNameIdentifier();
         if (idNode != null) {
             return idNode.setName(name);

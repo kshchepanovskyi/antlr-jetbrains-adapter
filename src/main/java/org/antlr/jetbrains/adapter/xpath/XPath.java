@@ -28,6 +28,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.lang.Language;
@@ -36,7 +37,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import org.antlr.jetbrains.adapter.lexer.PSIElementTypeFactory;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
 import org.antlr.jetbrains.adapter.psi.Trees;
@@ -46,10 +55,6 @@ import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.xpath.XPathLexer;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
 
 /**
  * Represent a subset of XPath XML path syntax for use in identifying nodes in
@@ -103,9 +108,9 @@ public class XPath {
     private final Map<String, Integer> ruleIndexes;
     private final Map<String, Integer> tokenTypes;
 
-    protected String path;
+    private String path;
 
-    public XPath(PSIElementTypeFactory psiElementTypeFactory, String path) {
+    private XPath(PsiElementTypeFactory psiElementTypeFactory, String path) {
         this.path = path;
         this.tokenElementTypes = psiElementTypeFactory.getTokenIElementTypes();
         this.ruleElementTypes = psiElementTypeFactory.getRuleIElementTypes();
@@ -113,15 +118,17 @@ public class XPath {
         this.tokenTypes = psiElementTypeFactory.getTokenNameToTypeMap();
     }
 
-    // TODO: check for invalid token/rule names, bad syntax
-
-    public static Collection<? extends PsiElement> findAll(PSIElementTypeFactory psiElementTypeFactory, PsiElement tree, String xpath) {
+    /**
+     * Find all elements in a give tree according to XPath expression.
+     */
+    public static Collection<? extends PsiElement> findAll(PsiElementTypeFactory psiElementTypeFactory, PsiElement tree, String xpath) {
+        // TODO: check for invalid token/rule names, bad syntax
         XPath p = new XPath(psiElementTypeFactory, xpath);
         XPathElement[] elements = p.split(xpath);
         return p.evaluate(tree, elements);
     }
 
-    public XPathElement[] split(String path) {
+    private XPathElement[] split(String path) {
         ANTLRInputStream in;
         try {
             in = new ANTLRInputStream(new StringReader(path));
@@ -145,7 +152,6 @@ public class XPath {
         }
 
         List<Token> tokens = tokenStream.getTokens();
-//		System.out.println("path="+path+"=>"+tokens);
         List<XPathElement> elements = new ArrayList<>();
         int n = tokens.size();
         int i = 0;
@@ -156,7 +162,6 @@ public class XPath {
             switch (el.getType()) {
                 case XPathLexer.ROOT:
                 case XPathLexer.ANYWHERE:
-                    boolean anywhere = el.getType() == XPathLexer.ANYWHERE;
                     i++;
                     next = tokens.get(i);
                     boolean invert = next.getType() == XPathLexer.BANG;
@@ -164,6 +169,7 @@ public class XPath {
                         i++;
                         next = tokens.get(i);
                     }
+                    boolean anywhere = el.getType() == XPathLexer.ANYWHERE;
                     XPathElement pathElement = getXPathElement(next, anywhere);
                     pathElement.invert = invert;
                     elements.add(pathElement);
@@ -201,30 +207,30 @@ public class XPath {
         Integer ruleIndex = ruleIndexes.get(word);
         switch (wordToken.getType()) {
             case XPathLexer.WILDCARD:
-                return anywhere ?
-                        new XPathWildcardAnywhereElement() :
-                        new XPathWildcardElement();
+                return anywhere
+                        ? new XPathWildcardAnywhereElement()
+                        : new XPathWildcardElement();
             case XPathLexer.TOKEN_REF:
             case XPathLexer.STRING:
                 if (ttype == null || ttype == Token.INVALID_TYPE) {
-                    throw new IllegalArgumentException(word +
-                            " at index " +
-                            wordToken.getStartIndex() +
-                            " isn't a valid token name");
+                    throw new IllegalArgumentException(word
+                            + " at index "
+                            + wordToken.getStartIndex()
+                            + " isn't a valid token name");
                 }
-                return anywhere ?
-                        new XPathTokenAnywhereElement(word, ttype) :
-                        new XPathTokenElement(word, ttype);
+                return anywhere
+                        ? new XPathTokenAnywhereElement(word, ttype)
+                        : new XPathTokenElement(word, ttype);
             default:
                 if (ruleIndex == null || ruleIndex == -1) {
-                    throw new IllegalArgumentException(word +
-                            " at index " +
-                            wordToken.getStartIndex() +
-                            " isn't a valid rule name");
+                    throw new IllegalArgumentException(word
+                            + " at index "
+                            + wordToken.getStartIndex()
+                            + " isn't a valid rule name");
                 }
-                return anywhere ?
-                        new XPathRuleAnywhereElement(word, ruleIndex) :
-                        new XPathRuleElement(word, ruleIndex);
+                return anywhere
+                        ? new XPathRuleAnywhereElement(word, ruleIndex)
+                        : new XPathRuleElement(word, ruleIndex);
         }
     }
 
@@ -234,7 +240,9 @@ public class XPath {
      * {@link #evaluate}.
      */
     public Collection<? extends PsiElement> evaluate(PsiElement t, XPathElement[] elements) {
-        if (t == null) return Collections.emptyList();
+        if (t == null) {
+            return Collections.emptyList();
+        }
 
         if (t instanceof PsiFile) {
             // the PSI fileroot exists above start rule in ANTLR grammar and hence above ANTLR's parse tree root

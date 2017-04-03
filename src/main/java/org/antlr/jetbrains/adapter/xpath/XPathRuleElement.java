@@ -28,15 +28,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 
 public class XPathRuleElement extends XPathElement {
     protected int ruleIndex;
@@ -54,8 +54,8 @@ public class XPathRuleElement extends XPathElement {
             IElementType elementType = c.getNode().getElementType();
             if (elementType instanceof RuleIElementType) {
                 RuleIElementType ruleEl = (RuleIElementType) elementType;
-                if ((ruleEl.getRuleIndex() == ruleIndex && !invert) ||
-                        (ruleEl.getRuleIndex() != ruleIndex && invert)) {
+                if ((ruleEl.getRuleIndex() == ruleIndex && !invert)
+                        || (ruleEl.getRuleIndex() != ruleIndex && invert)) {
                     nodes.add(c);
                 }
             }

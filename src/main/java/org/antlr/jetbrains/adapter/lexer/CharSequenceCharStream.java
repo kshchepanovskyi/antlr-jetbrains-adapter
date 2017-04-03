@@ -43,8 +43,12 @@ class CharSequenceCharStream implements CharStream {
         int start = interval.a;
         int stop = interval.b;
         int n = size();
-        if (stop >= n) stop = n - 1;
-        if (start >= n) return "";
+        if (stop >= n) {
+            stop = n - 1;
+        }
+        if (start >= n) {
+            return "";
+        }
         return buffer.subSequence(start, stop + 1).toString();
     }
 
@@ -107,9 +111,7 @@ class CharSequenceCharStream implements CharStream {
         if (endOffset >= 0) {
             return endOffset;
         }
-
-        int n = buffer.length();
-        return n;
+        return buffer.length();
     }
 
     @Override

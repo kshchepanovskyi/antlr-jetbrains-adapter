@@ -26,10 +26,7 @@ public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
     @Nullable
     @Override
     public PsiElement resolve(PsiNamedElement element) {
-//		System.out.println(getClass().getSimpleName()+
-//			                   ".resolve("+myElement.getName()+
-//			                   " at "+Integer.toHexString(myElement.hashCode())+")");
-        return SymtabUtils.resolve(this, parserDefinition.psiElementTypeFactory,
+        return SymtabUtils.resolve(this, parserDefinition.PSI_ELEMENT_TYPE_FACTORY,
                 element, "/script/function/ID");
     }
 }

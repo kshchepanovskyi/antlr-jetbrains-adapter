@@ -1,8 +1,7 @@
 package org.antlr.jetbrains.sample;
 
 import com.intellij.openapi.util.IconLoader;
-
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class Icons {
     public static final Icon SAMPLE_ICON = IconLoader.getIcon("/org/antlr/jetbrains/sample/sample.png");

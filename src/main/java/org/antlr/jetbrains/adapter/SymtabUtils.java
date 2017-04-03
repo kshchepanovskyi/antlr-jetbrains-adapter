@@ -3,27 +3,27 @@ package org.antlr.jetbrains.adapter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiNamedElement;
-import org.antlr.jetbrains.adapter.lexer.PSIElementTypeFactory;
+import java.util.Collection;
+import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.antlr.jetbrains.adapter.psi.Trees;
 import org.antlr.jetbrains.adapter.xpath.XPath;
 
-import java.util.Collection;
-
 public class SymtabUtils {
+
     /**
      * Return the root of a def subtree chosen from among the
      * matches from xpathToIDNodes that matches namedElement's text.
      * Assumption: ID nodes are direct children of def subtree roots.
      */
     public static PsiElement resolve(ScopeNode scope,
-                                     PSIElementTypeFactory psiElementTypeFactory,
+                                     PsiElementTypeFactory psiElementTypeFactory,
                                      PsiNamedElement namedElement,
-                                     String xpathToIDNodes) {
-        Collection<? extends PsiElement> defIDNodes =
-                XPath.findAll(psiElementTypeFactory, scope, xpathToIDNodes);
+                                     String xpathToIdNodes) {
+        Collection<? extends PsiElement> defIdNodes =
+                XPath.findAll(psiElementTypeFactory, scope, xpathToIdNodes);
         String id = namedElement.getName();
-        PsiElement idNode = Trees.toMap(defIDNodes).get(id); // Find identifier node of variable definition
+        PsiElement idNode = Trees.toMap(defIdNodes).get(id); // Find identifier node of variable definition
         if (idNode != null) {
             return idNode.getParent(); // return the def subtree root
         }
@@ -40,6 +40,9 @@ public class SymtabUtils {
         return null;
     }
 
+    /**
+     * Get {@link ScopeNode} for a given element.
+     */
     public static ScopeNode getContextFor(PsiElement element) {
         PsiElement parent = element.getParent();
         if (parent instanceof ScopeNode) {

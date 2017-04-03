@@ -27,7 +27,7 @@ public class TokenIElementType extends IElementType {
         this.antlrTokenType = antlrTokenType;
     }
 
-    public int getANTLRTokenType() {
+    public int getAntlrTokenType() {
         return antlrTokenType;
     }
 }

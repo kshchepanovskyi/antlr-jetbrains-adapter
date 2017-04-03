@@ -28,12 +28,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.psi.PsiElement;
-import org.antlr.jetbrains.adapter.psi.Trees;
-
 import java.util.Collection;
+import org.antlr.jetbrains.adapter.psi.Trees;
 
 /**
  * Either {@code rulename} at start of path or {@code ...//rulename} in middle of path.

@@ -28,11 +28,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.antlr.jetbrains.adapter.xpath;
 
 import com.intellij.psi.PsiElement;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,11 +44,12 @@ public class XPathWildcardElement extends XPathElement {
 
     @Override
     public Collection<PsiElement> evaluate(final PsiElement t) {
-        if (invert) return new ArrayList<>(); // !* is weird but valid (empty)
-        List<PsiElement> kids = new ArrayList<>();
-        for (PsiElement c : t.getChildren()) {
-            kids.add(c);
+        if (invert) {
+            // !* is weird but valid (empty)
+            return new ArrayList<>();
         }
+        List<PsiElement> kids = new ArrayList<>();
+        kids.addAll(Arrays.asList(t.getChildren()));
         return kids;
     }
 }
