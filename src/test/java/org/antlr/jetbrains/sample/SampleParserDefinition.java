@@ -16,7 +16,7 @@ import org.antlr.jetbrains.adapter.lexer.AntlrLexerAdapter;
 import org.antlr.jetbrains.adapter.lexer.PsiElementTypeFactory;
 import org.antlr.jetbrains.adapter.lexer.RuleIElementType;
 import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
-import org.antlr.jetbrains.adapter.parser.AntlrParserAdaptor;
+import org.antlr.jetbrains.adapter.parser.AntlrParserAdapter;
 import org.antlr.jetbrains.adapter.psi.AntlrPsiNode;
 import org.antlr.jetbrains.sample.parser.SampleLanguageLexer;
 import org.antlr.jetbrains.sample.parser.SampleLanguageParser;
@@ -63,7 +63,7 @@ public class SampleParserDefinition implements ParserDefinition {
     @NotNull
     public PsiParser createParser(final Project project) {
         final SampleLanguageParser parser = new SampleLanguageParser(null);
-        return new AntlrParserAdaptor(SampleLanguage.INSTANCE, parser, PSI_ELEMENT_TYPE_FACTORY) {
+        return new AntlrParserAdapter(SampleLanguage.INSTANCE, parser, PSI_ELEMENT_TYPE_FACTORY) {
             @Override
             protected ParseTree parse(Parser parser, IElementType root) {
                 // start rule depends on root passed in; sometimes we want to create an ID node etc...
@@ -138,7 +138,7 @@ public class SampleParserDefinition implements ParserDefinition {
      * node returned from parsetree->PSI conversion.  But, it
      * must be a CompositeElement! The adaptor calls
      * rootMarker.done(root) to finish off the PSI conversion.
-     * See {@link AntlrParserAdaptor#parse(IElementType root,
+     * See {@link AntlrParserAdapter#parse(IElementType root,
      * PsiBuilder)}
      * <p>
      * If you don't care to distinguish PSI nodes by type, it is

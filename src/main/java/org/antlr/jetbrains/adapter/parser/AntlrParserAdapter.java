@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * An adaptor that makes an ANTLR parser look like a PsiParser.
  */
-public abstract class AntlrParserAdaptor implements PsiParser {
+public abstract class AntlrParserAdapter implements PsiParser {
     protected final Language language;
     protected final Parser parser;
     private final PsiElementTypeFactory psiElementTypeFactory;
@@ -29,7 +29,7 @@ public abstract class AntlrParserAdaptor implements PsiParser {
      * the IDE requests a {@link #parse(IElementType, PsiBuilder)},
      * the token stream will be set on the parser.
      */
-    public AntlrParserAdaptor(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory) {
+    public AntlrParserAdapter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory) {
         this.language = language;
         this.parser = parser;
         this.psiElementTypeFactory = psiElementTypeFactory;
@@ -47,7 +47,7 @@ public abstract class AntlrParserAdaptor implements PsiParser {
         TokenSource source = new PsiTokenSource(builder);
         TokenStream tokens = new CommonTokenStream(source);
         parser.setTokenStream(tokens);
-        parser.setErrorHandler(new ErrorStrategyAdaptor()); // tweaks missing tokens
+        parser.setErrorHandler(new ErrorStrategyAdapter()); // tweaks missing tokens
         parser.removeErrorListeners();
         parser.addErrorListener(new SyntaxErrorListener()); // trap errors
         ParseTree parseTree = null;

@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.tree.ErrorNodeImpl;
  * Also set start/stop of missing token to always be the current token,
  * even if that's EOF.
  */
-public class ErrorStrategyAdaptor extends DefaultErrorStrategy {
+public class ErrorStrategyAdapter extends DefaultErrorStrategy {
     @Override
     protected void consumeUntil(Parser recognizer, IntervalSet set) {
         Token o = recognizer.getCurrentToken();
