@@ -23,16 +23,22 @@ public abstract class AntlrParserAdapter implements PsiParser {
     protected final Language language;
     protected final Parser parser;
     private final PsiElementTypeFactory psiElementTypeFactory;
+    private final SyntaxErrorFormatter errorFormatter;
+
+    public AntlrParserAdapter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory) {
+        this(language, parser, psiElementTypeFactory, new DefaultSyntaxErrorFormatter());
+    }
 
     /**
      * Create a jetbrains adaptor for an ANTLR parser object. When
      * the IDE requests a {@link #parse(IElementType, PsiBuilder)},
      * the token stream will be set on the parser.
      */
-    public AntlrParserAdapter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory) {
+    public AntlrParserAdapter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory, SyntaxErrorFormatter errorFormatter) {
         this.language = language;
         this.parser = parser;
         this.psiElementTypeFactory = psiElementTypeFactory;
+        this.errorFormatter = errorFormatter;
     }
 
     public Language getLanguage() {
@@ -90,6 +96,6 @@ public abstract class AntlrParserAdapter implements PsiParser {
     protected abstract ParseTree parse(Parser parser, IElementType root);
 
     protected AntlrParseTreeToPsiConverter createListener(Parser parser, IElementType root, PsiBuilder builder) {
-        return new AntlrParseTreeToPsiConverter(language, parser, psiElementTypeFactory, builder);
+        return new AntlrParseTreeToPsiConverter(language, parser, psiElementTypeFactory, builder, errorFormatter);
     }
 }

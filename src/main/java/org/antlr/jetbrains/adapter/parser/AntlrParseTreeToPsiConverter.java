@@ -36,6 +36,7 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
     protected final List<TokenIElementType> tokenElementTypes;
     protected final List<RuleIElementType> ruleElementTypes;
     protected Map<RecognitionException, SyntaxError> syntaxErrors;
+    protected final SyntaxErrorFormatter errorFormatter;
     /**
      * Map an error's start char index (usually start of a token) to the error object.
      */
@@ -45,9 +46,17 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
      * Create new instance of ANTLR parse tree to PSI converter.
      */
     public AntlrParseTreeToPsiConverter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory, PsiBuilder builder) {
+        this(language, parser, psiElementTypeFactory, builder, new DefaultSyntaxErrorFormatter());
+    }
+
+    /**
+     * Create new instance of ANTLR parse tree to PSI converter.
+     */
+    public AntlrParseTreeToPsiConverter(Language language, Parser parser, PsiElementTypeFactory psiElementTypeFactory, PsiBuilder builder, SyntaxErrorFormatter errorFormatter) {
         this.language = language;
         this.psiElementTypeFactory = psiElementTypeFactory;
         this.builder = builder;
+        this.errorFormatter = errorFormatter;
 
         this.tokenElementTypes = psiElementTypeFactory.getTokenIElementTypes();
         this.ruleElementTypes = psiElementTypeFactory.getRuleIElementTypes();
@@ -132,7 +141,7 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
         SyntaxError error = tokenToErrorMap.get(nodeStartIndex);
 
         if (error != null) {
-            PsiBuilder.Marker errorMarker = builder.mark();
+            PsiBuilder.Marker marker = builder.mark();
             if (badToken.getStartIndex() >= 0
                     && badToken.getType() != Token.EOF
                     && !isConjuredToken) {
@@ -141,8 +150,8 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
                 // but can't consume a token that does not exist.
                 builder.advanceLexer();
             }
-            String message = String.format("%s%n", error.getMessage());
-            errorMarker.error(message);
+            String message = errorFormatter.formatMessage(error);
+            marker.error(message);
         } else {
             if (isConjuredToken) {
                 PsiBuilder.Marker errorMarker = builder.mark();
@@ -167,7 +176,8 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
         if (ctx.exception != null) {
             SyntaxError error = syntaxErrors.get(ctx.exception);
             if (error != null) {
-                marker.error(error.getMessage());
+                String message = errorFormatter.formatMessage(error);
+                marker.error(message);
             } else {
                 // should not happen
                 marker.error("syntax error");
