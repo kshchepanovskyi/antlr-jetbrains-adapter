@@ -3,7 +3,9 @@ package org.antlr.jetbrains.adapter.lexer;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +30,24 @@ public class PsiElementTypeFactory {
     private final Map<String, Integer> ruleNames;
     private final TokenIElementType eofIElementType;
 
-    private PsiElementTypeFactory(Language language, Parser parser) {
+    private PsiElementTypeFactory(Language language, Parser parser,
+            Collection<RuleIElementType> customRuleElementTypes) {
         Vocabulary vocabulary = parser.getVocabulary();
         String[] ruleNames = parser.getRuleNames();
         tokenIElementTypes = createTokenIElementTypes(language, vocabulary);
-        ruleIElementTypes = createRuleIElementTypes(language, ruleNames);
+        ruleIElementTypes = createRuleIElementTypes(language, ruleNames, customRuleElementTypes);
         tokenNames = createTokenTypeMap(vocabulary);
         this.ruleNames = createRuleIndexMap(ruleNames);
         eofIElementType = new TokenIElementType(Token.EOF, "EOF", language);
     }
 
     public static PsiElementTypeFactory create(Language language, Parser parser) {
-        return new PsiElementTypeFactory(language, parser);
+        return create(language, parser, new ArrayList<>());
+    }
+
+    public static PsiElementTypeFactory create(Language language, Parser parser,
+            Collection<RuleIElementType> customRuleElementTypes) {
+        return new PsiElementTypeFactory(language, parser, customRuleElementTypes);
     }
 
     public TokenIElementType getEofElementType() {
@@ -81,7 +89,8 @@ public class PsiElementTypeFactory {
     }
 
     @NotNull
-    private List<TokenIElementType> createTokenIElementTypes(Language language, Vocabulary vocabulary) {
+    private List<TokenIElementType> createTokenIElementTypes(Language language,
+            Vocabulary vocabulary) {
         return IntStream.rangeClosed(0, vocabulary.getMaxTokenType())
                 .boxed()
                 .map(i -> {
@@ -92,11 +101,16 @@ public class PsiElementTypeFactory {
     }
 
     @NotNull
-    private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames) {
+    private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames,
+            Collection<RuleIElementType> customRuleElementTypes) {
         List<RuleIElementType> result;
-        RuleIElementType[] elementTypes = new RuleIElementType[ruleNames.length];
+        RuleIElementType[] elementTypes = new RuleIElementTypeImpl[ruleNames.length];
         for (int i = 0; i < ruleNames.length; i++) {
-            elementTypes[i] = new RuleIElementType(i, ruleNames[i], language);
+            elementTypes[i] = new RuleIElementTypeImpl(i, ruleNames[i], language);
+        }
+        for (RuleIElementType customType : customRuleElementTypes) {
+            assert customType instanceof IElementType;
+            elementTypes[customType.getRuleIndex()] = customType;
         }
         result = Collections.unmodifiableList(Arrays.asList(elementTypes));
         return result;

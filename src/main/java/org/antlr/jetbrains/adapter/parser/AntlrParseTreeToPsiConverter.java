@@ -3,6 +3,7 @@ package org.antlr.jetbrains.adapter.parser;
 import com.intellij.lang.Language;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
+import com.intellij.psi.tree.IElementType;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -183,7 +184,7 @@ public class AntlrParseTreeToPsiConverter implements ParseTreeListener {
                 marker.error("syntax error");
             }
         } else {
-            marker.done(getRuleElementTypes().get(ctx.getRuleIndex()));
+            marker.done((IElementType) getRuleElementTypes().get(ctx.getRuleIndex()));
         }
     }
 }
