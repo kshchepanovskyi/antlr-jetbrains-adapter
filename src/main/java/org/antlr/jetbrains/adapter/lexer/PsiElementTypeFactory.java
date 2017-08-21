@@ -41,13 +41,12 @@ public class PsiElementTypeFactory {
         eofIElementType = new TokenIElementType(Token.EOF, "EOF", language);
     }
 
-    public static PsiElementTypeFactory create(Language language, Parser parser) {
-        return create(language, parser, new ArrayList<>());
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public static PsiElementTypeFactory create(Language language, Parser parser,
-            Collection<RuleIElementType> customRuleElementTypes) {
-        return new PsiElementTypeFactory(language, parser, customRuleElementTypes);
+    public static PsiElementTypeFactory create(Language language, Parser parser) {
+        return new PsiElementTypeFactory(language, parser, new ArrayList<>());
     }
 
     public TokenIElementType getEofElementType() {
@@ -130,5 +129,38 @@ public class PsiElementTypeFactory {
             }
         }
         return TokenSet.create(elementTypes);
+    }
+
+    /**
+     * Builder for [PsiElementFactory].
+     */
+    public static final class Builder {
+
+        private final Collection<RuleIElementType> customElementTypes = new ArrayList<>();
+        private Language language;
+        private Parser parser;
+
+        Builder() {
+        }
+
+        public Builder language(Language language) {
+            this.language = language;
+            return this;
+        }
+
+        public Builder parser(Parser parser) {
+            this.parser = parser;
+            return this;
+        }
+
+        public <T extends IElementType & RuleIElementType> Builder addRuleElementType(
+                T elementType) {
+            customElementTypes.add(elementType);
+            return this;
+        }
+
+        public PsiElementTypeFactory build() {
+            return new PsiElementTypeFactory(language, parser, customElementTypes);
+        }
     }
 }
