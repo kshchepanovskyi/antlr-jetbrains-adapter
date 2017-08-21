@@ -1,5 +1,6 @@
 package org.antlr.jetbrains.adapter.lexer;
 
+import com.google.common.base.Preconditions;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -108,7 +109,8 @@ public class PsiElementTypeFactory {
             elementTypes[i] = new RuleIElementTypeImpl(i, ruleNames[i], language);
         }
         for (RuleIElementType customType : customRuleElementTypes) {
-            assert customType instanceof IElementType;
+            Preconditions.checkArgument(customType instanceof IElementType,
+                    "Custom rule element types should extend IElementType.");
             elementTypes[customType.getRuleIndex()] = customType;
         }
         result = Collections.unmodifiableList(Arrays.asList(elementTypes));
