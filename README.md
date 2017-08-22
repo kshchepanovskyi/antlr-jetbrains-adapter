@@ -54,3 +54,23 @@ Install to local maven repository:
 ```bash
 ./gradlew publishMainPublicationToMavenLocal
 ```
+
+# CI
+
+Builds run automatically: https://jenkins.ksprojects.org/job/kshchepanovskyi/
+
+Artifacts are uploaded to bintray:
+
+https://bintray.com/antlr/maven/antlr4-jetbrains-adapter/
+
+Version number computation logic:
+
+```sh
+if [[ "$BRANCH_NAME" =~ ^(release/).*$ ]]; then
+  VERSION=$(cat release.txt).${BUILD_ID}
+elif [[ "$BRANCH_NAME" =~ ^(master).*$ ]]; then
+  VERSION=$(cat release.txt).alpha.${BUILD_ID}                                                              
+else
+  VERSION=$(cat release.txt).snapshot.$(git rev-parse HEAD)
+fi
+```
