@@ -3,6 +3,7 @@ package org.antlr.jetbrains.adapter.psi;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * An equivalent of [AntlrPsiNode] for stub based PsiElements.
  */
 public abstract class AntlrStubBasedPsiNode<T extends StubElement> extends
-        StubBasedPsiElementBase<T> {
+        StubBasedPsiElementBase<T> implements StubBasedPsiElement<T> {
 
     public AntlrStubBasedPsiNode(@NotNull ASTNode node) {
         super(node);

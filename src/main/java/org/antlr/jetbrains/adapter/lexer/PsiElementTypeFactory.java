@@ -103,18 +103,16 @@ public class PsiElementTypeFactory {
     @NotNull
     private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames,
             Collection<RuleIElementType> customRuleElementTypes) {
-        List<RuleIElementType> result;
-        RuleIElementType[] elementTypes = new RuleIElementTypeImpl[ruleNames.length];
+        List<RuleIElementType> elementTypes = new ArrayList<>();
         for (int i = 0; i < ruleNames.length; i++) {
-            elementTypes[i] = new RuleIElementTypeImpl(i, ruleNames[i], language);
+            elementTypes.add(new RuleIElementTypeImpl(i, ruleNames[i], language));
         }
         for (RuleIElementType customType : customRuleElementTypes) {
             Preconditions.checkArgument(customType instanceof IElementType,
                     "Custom rule element types should extend IElementType.");
-            elementTypes[customType.getRuleIndex()] = customType;
+            elementTypes.set(customType.getRuleIndex(), customType);
         }
-        result = Collections.unmodifiableList(Arrays.asList(elementTypes));
-        return result;
+        return Collections.unmodifiableList(elementTypes);
     }
 
     /**
