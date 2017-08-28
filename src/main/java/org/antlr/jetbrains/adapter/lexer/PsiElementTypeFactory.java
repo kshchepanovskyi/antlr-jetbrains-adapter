@@ -1,9 +1,12 @@
 package org.antlr.jetbrains.adapter.lexer;
 
+import com.google.common.base.Preconditions;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +31,23 @@ public class PsiElementTypeFactory {
     private final Map<String, Integer> ruleNames;
     private final TokenIElementType eofIElementType;
 
-    private PsiElementTypeFactory(Language language, Parser parser) {
+    private PsiElementTypeFactory(Language language, Parser parser,
+            Collection<RuleIElementType> customRuleElementTypes) {
         Vocabulary vocabulary = parser.getVocabulary();
         String[] ruleNames = parser.getRuleNames();
         tokenIElementTypes = createTokenIElementTypes(language, vocabulary);
-        ruleIElementTypes = createRuleIElementTypes(language, ruleNames);
+        ruleIElementTypes = createRuleIElementTypes(language, ruleNames, customRuleElementTypes);
         tokenNames = createTokenTypeMap(vocabulary);
         this.ruleNames = createRuleIndexMap(ruleNames);
         eofIElementType = new TokenIElementType(Token.EOF, "EOF", language);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static PsiElementTypeFactory create(Language language, Parser parser) {
-        return new PsiElementTypeFactory(language, parser);
+        return new PsiElementTypeFactory(language, parser, new ArrayList<>());
     }
 
     public TokenIElementType getEofElementType() {
@@ -81,7 +89,8 @@ public class PsiElementTypeFactory {
     }
 
     @NotNull
-    private List<TokenIElementType> createTokenIElementTypes(Language language, Vocabulary vocabulary) {
+    private List<TokenIElementType> createTokenIElementTypes(Language language,
+            Vocabulary vocabulary) {
         return IntStream.rangeClosed(0, vocabulary.getMaxTokenType())
                 .boxed()
                 .map(i -> {
@@ -92,14 +101,18 @@ public class PsiElementTypeFactory {
     }
 
     @NotNull
-    private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames) {
-        List<RuleIElementType> result;
-        RuleIElementType[] elementTypes = new RuleIElementType[ruleNames.length];
+    private List<RuleIElementType> createRuleIElementTypes(Language language, String[] ruleNames,
+            Collection<RuleIElementType> customRuleElementTypes) {
+        List<RuleIElementType> elementTypes = new ArrayList<>();
         for (int i = 0; i < ruleNames.length; i++) {
-            elementTypes[i] = new RuleIElementType(i, ruleNames[i], language);
+            elementTypes.add(new RuleIElementTypeImpl(i, ruleNames[i], language));
         }
-        result = Collections.unmodifiableList(Arrays.asList(elementTypes));
-        return result;
+        for (RuleIElementType customType : customRuleElementTypes) {
+            Preconditions.checkArgument(customType instanceof IElementType,
+                    "Custom rule element types should extend IElementType.");
+            elementTypes.set(customType.getRuleIndex(), customType);
+        }
+        return Collections.unmodifiableList(elementTypes);
     }
 
     /**
@@ -116,5 +129,38 @@ public class PsiElementTypeFactory {
             }
         }
         return TokenSet.create(elementTypes);
+    }
+
+    /**
+     * Builder for [PsiElementFactory].
+     */
+    public static final class Builder {
+
+        private final Collection<RuleIElementType> customElementTypes = new ArrayList<>();
+        private Language language;
+        private Parser parser;
+
+        Builder() {
+        }
+
+        public Builder language(Language language) {
+            this.language = language;
+            return this;
+        }
+
+        public Builder parser(Parser parser) {
+            this.parser = parser;
+            return this;
+        }
+
+        public <T extends IElementType & RuleIElementType> Builder addRuleElementType(
+                T elementType) {
+            customElementTypes.add(elementType);
+            return this;
+        }
+
+        public PsiElementTypeFactory build() {
+            return new PsiElementTypeFactory(language, parser, customElementTypes);
+        }
     }
 }

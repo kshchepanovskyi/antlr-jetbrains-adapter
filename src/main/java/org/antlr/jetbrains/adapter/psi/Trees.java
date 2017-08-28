@@ -96,9 +96,9 @@ public class Trees {
         return false;
     }
 
-    public static AntlrPsiNode getRoot(PsiElement t) {
+    public static PsiElement getRoot(PsiElement t) {
         PsiFile contextOfType = PsiTreeUtil.getParentOfType(t, PsiFile.class);
-        return (AntlrPsiNode) Trees.getChildren(contextOfType)[0];
+        return Trees.getChildren(contextOfType)[0];
     }
 
     /**
@@ -133,18 +133,16 @@ public class Trees {
 
     private static void findAllNodesImpl(PsiElement t, int index, boolean findTokens,
                                          List<? super PsiElement> nodes) {
+        IElementType elType = t.getNode().getElementType();
+
         // check this node (the root) first
         if (findTokens && t instanceof LeafPsiElement) {
-            LeafPsiElement tnode = (LeafPsiElement) t;
-            IElementType elType = tnode.getNode().getElementType();
             if (elType instanceof TokenIElementType) {
                 if (((TokenIElementType) elType).getAntlrTokenType() == index) {
                     nodes.add(t);
                 }
             }
-        } else if (!findTokens && t instanceof AntlrPsiNode) {
-            AntlrPsiNode ctx = (AntlrPsiNode) t;
-            IElementType elType = ctx.getNode().getElementType();
+        } else if (!findTokens && !(t instanceof LeafPsiElement)) {
             if (elType instanceof RuleIElementType) {
                 if (((RuleIElementType) elType).getRuleIndex() == index) {
                     nodes.add(t);

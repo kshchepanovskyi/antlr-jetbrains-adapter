@@ -9,7 +9,7 @@ import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class represents an internal, non-leaf "composite" PSI
+ * A base class for an internal, non-leaf "composite" PSI
  * node. The term "AntlrPsiNode" is somewhat of a misnomer as it's
  * really just a PSI node but make sure that getChildren() acts as I
  * would expect, returning all children.
